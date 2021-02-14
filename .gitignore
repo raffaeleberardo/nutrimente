@@ -1,0 +1,6 @@
+/env
+/__pycache__
+/.idea
+book.db
+model.py
+creazione_tabelle.sql

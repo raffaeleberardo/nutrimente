@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block main %}
+<main>
+    {% if request.args.get('error') %}
+    <div class="p-3 mb-2 bg-danger text-white rounded shadow-lg"> {{ request.args.get('error') }} </div>
+    {% endif %}
+    <form action="/search" method="post">
+        <div class="input-group mb-3 mt-3">
+            <input id="book-search" class="form-control col-xs-4" type="text" name='book' placeholder="Inserire ISBN">
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="submit">Cerca</button>
+            </div>
+        </div>
+    </form>
+    <div id="books_list" class="container-fluid row">
+        {% for book in books %}
+        <div class="shadow-lg m-3 p-3 bg-white rounded d-flex flex-wrap flex-column align-items-center justify-content-between col">
+            <h6 class="text-capitalize mb-2">{{ book['title'] }}</h6>
+            <img style="height: 196px; width: 128px;"
+                 src="{% if book['cover'] %} {{ book['cover'] }} {% else %} {{ url_for('static', filename = 'not_available.jpg') }} {% endif %}" class="rounded">
+            <div class="mt-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="letto-{{ book['isbn'] }}" name="{{ book['isbn'] }}"
+                           value="1" {% if book['state']>0 %}checked="checked"{% endif %}>
+                    <label class="form-check-label" for="letto-{{ book['isbn'] }}">Letto</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="in-lettura-{{ book['isbn'] }}"
+                           name="{{ book['isbn'] }}" value="0" {% if book['state']==0 %}checked="checked"{% endif %}>
+                    <label class="form-check-label" for="in-lettura-{{ book['isbn'] }}">In lettura</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="non-letto-{{ book['isbn'] }}"
+                           name="{{ book['isbn'] }}"
+                           value="-1" {% if book['state']<0 %}checked="checked"{% endif %}>
+                    <label class="form-check-label" for="non-letto-{{ book['isbn'] }}">Da leggere</label>
+                </div>
+            </div>
+            <button type="button" id="{{ book['isbn'] }}" class="btn btn-outline-danger mt-2" aria-label="Close">Elimina</button>
+        </div>
+        {% endfor %}
+    </div>
+<!--    <div class="text-center sticky-bottom mb-3">-->
+<!--        <button type="button" class="btn btn-outline-primary" id="mostra" href="/">Mostra di più</button>-->
+<!--    </div>-->
+</main>
+{% endblock main %}
